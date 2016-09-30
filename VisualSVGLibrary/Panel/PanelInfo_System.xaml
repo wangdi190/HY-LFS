@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
              xmlns:dxga="http://schemas.devexpress.com/winfx/2008/xaml/gauges"
+             xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -31,7 +32,7 @@
         </DataTemplate>
     </UserControl.Resources>
     
-    <Grid Loaded="Grid_Loaded"  Unloaded="Grid_Unloaded">
+    <Grid Name="grdMain"  Loaded="Grid_Loaded"  Unloaded="Grid_Unloaded">
         <dxdo:DockLayoutManager Background="#64FFFFFF" >
             <dxdo:DockLayoutManager.LayoutRoot>
                 <dxdo:LayoutGroup Orientation="Vertical">
@@ -40,15 +41,67 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"></RowDefinition>
-                                <RowDefinition Height="2*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
 
                             <GroupBox Header="运行信息" Foreground="#00FFFF" BorderThickness="0.5">
                                 <ItemsControl x:Name="lstRunData" ItemTemplate="{StaticResource RunDataTemplate}"></ItemsControl>
                             </GroupBox>
 
-                            <GroupBox Header="故障事件" Grid.Row="1" Foreground="#00FFFF" BorderThickness="0.5">
-                                
+                            <GroupBox Header="用电量" Grid.Row="1" Foreground="#00FFFF" BorderThickness="0.5">
+                                <dxc:ChartControl Padding="0" Background="Transparent" BorderBrush="Transparent">
+                                    <dxc:XYDiagram2D>
+                                        <dxc:XYDiagram2D.AxisY>
+                                            <dxc:AxisY2D Visible="False" Interlaced="False" GridLinesMinorVisible="True"></dxc:AxisY2D>
+                                        </dxc:XYDiagram2D.AxisY>
+                                        <dxc:XYDiagram2D.DefaultPane>
+                                            <dxc:Pane DomainBrush="#00000000" Padding="0" />
+                                        </dxc:XYDiagram2D.DefaultPane>
+                                        <dxc:XYDiagram2D.AxisX>
+                                            <dxc:AxisX2D Interlaced="True" Visible="False">
+                                                <dxc:AxisX2D.DateTimeScaleOptions>
+                                                    <dxc:ManualDateTimeScaleOptions GridAlignment="Hour" MeasureUnit="Minute" />
+                                                </dxc:AxisX2D.DateTimeScaleOptions>
+                                            </dxc:AxisX2D>
+                                        </dxc:XYDiagram2D.AxisX>
+                                        <dxc:LineSeries2D ArgumentDataMember="argudate" ValueDataMember="value" DataSource="{Binding realEle}" Brush="#86ADD8E6" CrosshairLabelPattern="{}{S}:{V:f1}MW">
+                                            <dxc:LineSeries2D.LineStyle>
+                                                <dxc:LineStyle/>
+                                            </dxc:LineSeries2D.LineStyle>
+                                        </dxc:LineSeries2D>
+                                    </dxc:XYDiagram2D>
+                                </dxc:ChartControl>
+                            </GroupBox>
+
+                            <GroupBox Header="负荷曲线" Grid.Row="2" Foreground="#00FFFF" BorderThickness="0.5">
+                                <dxc:ChartControl Padding="0" Background="Transparent" BorderBrush="Transparent">
+                                    <dxc:XYDiagram2D>
+                                        <dxc:XYDiagram2D.AxisY>
+                                            <dxc:AxisY2D Visible="False" Interlaced="False" GridLinesMinorVisible="True"></dxc:AxisY2D>
+                                        </dxc:XYDiagram2D.AxisY>
+                                        <dxc:XYDiagram2D.DefaultPane>
+                                            <dxc:Pane DomainBrush="#00000000" Padding="0" />
+                                        </dxc:XYDiagram2D.DefaultPane>
+                                        <dxc:XYDiagram2D.AxisX>
+                                            <dxc:AxisX2D Interlaced="True" Visible="False">
+                                                <dxc:AxisX2D.DateTimeScaleOptions>
+                                                    <dxc:ManualDateTimeScaleOptions GridAlignment="Hour" MeasureUnit="Minute" />
+                                                </dxc:AxisX2D.DateTimeScaleOptions>
+                                            </dxc:AxisX2D>
+                                        </dxc:XYDiagram2D.AxisX>
+                                        <dxc:LineSeries2D ArgumentDataMember="argudate" ValueDataMember="value" DataSource="{Binding planLoads}" Brush="#86ADD8E6" CrosshairLabelPattern="{}{S}:{V:f1}MW">
+                                            <dxc:LineSeries2D.LineStyle>
+                                                <dxc:LineStyle/>
+                                            </dxc:LineSeries2D.LineStyle>
+                                        </dxc:LineSeries2D>
+                                        <dxc:LineSeries2D ArgumentDataMember="argudate" ValueDataMember="value" DataSource="{Binding realLoads}" Brush="Lime" CrosshairLabelPattern="{}{S}:{V:f1}MW">
+                                            <dxc:LineSeries2D.LineStyle>
+                                                <dxc:LineStyle />
+                                            </dxc:LineSeries2D.LineStyle>
+                                        </dxc:LineSeries2D>
+                                    </dxc:XYDiagram2D>
+                                </dxc:ChartControl>
                             </GroupBox>
                         </Grid>
                     </dxdo:LayoutPanel>

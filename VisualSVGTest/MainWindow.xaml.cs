@@ -28,13 +28,12 @@ namespace VisualSVGTest
         HySVG hySvg;
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            HySVG.FileSymbolDir = ".\\svg\\";
+            HySVG.FileSvgDir = ".\\svg\\";
 
             hySvg = new HySVG();
             grdMain.Children.Add(hySvg);
 
-            hySvg.UpdateVisual("主接线图.fac.pic.svg");
-
+            hySvg.UpdateVisual("万益能源主站 接线图-测试.svg");
         }
 
         //private void Button_Click(object sender, RoutedEventArgs e)

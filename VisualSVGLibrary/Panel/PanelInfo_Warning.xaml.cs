@@ -34,6 +34,8 @@ namespace VisualSVGLibrary.Panel
         ObservableCollection<RunDataWarning> lstWarnType;
         //IEnumerable<WarningInfo> lstWarnInfo = new IEnumerable<WarningInfo>();
 
+
+
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             lstWarnType = new ObservableCollection<RunDataWarning>();
@@ -58,6 +60,11 @@ namespace VisualSVGLibrary.Panel
         private void Grid_Unloaded(object sender, RoutedEventArgs e)
         {
             datatimer.Stop();
+            foreach(var wtype in lstWarnType)
+            {
+                wtype.IsChecked = false;
+            }
+            Update();
         }
 
         private void HorizontalToggleSwitch_Checked(object sender, RoutedEventArgs e)
@@ -102,7 +109,7 @@ namespace VisualSVGLibrary.Panel
                     break;
                 }
             }
-            
+            HySVG.uc.UpdateModel();
         }
 
         //private void Button_Click(object sender, RoutedEventArgs e)
@@ -126,7 +133,7 @@ namespace VisualSVGLibrary.Panel
         public void ShowObjStatus()
         {
             pLayer layer;
-            if (HySVG.uc.objManager.zLayers.TryGetValue("Disconnector", out layer))
+            if (HySVG.uc.objManager.zLayers.TryGetValue("yx", out layer))
             {
                 IEnumerable<WarningInfo> lstWarnInfo = from obj in layer.pModels.Values
                                                        orderby (obj as pSymbolObject).objStatus
@@ -190,7 +197,7 @@ namespace VisualSVGLibrary.Panel
                 }
             }
 
-            HySVG.uc.UpdateModel();
+            
         }
 
         private void lstList_MouseDoubleClick(object sender, MouseButtonEventArgs e)

@@ -24,7 +24,7 @@ namespace VisualSVGLibrary
     {
         public static Earth uc;
 
-        public static string FileSymbolDir = ".\\svg\\";
+        public static string FileSvgDir = ".\\svg\\";
 
         public HySVG()
         {
@@ -60,23 +60,25 @@ namespace VisualSVGLibrary
 
         public void UpdateVisual(string FileSvgName)
         {
-            phSvg.VisualFileSvg(FileSymbolDir + FileSvgName);
+            phSvg.VisualFileSvg(FileSvgDir + FileSvgName);
         }
 
         void genSymbol()
         {
-            DirectoryInfo SymbolFolder = new DirectoryInfo(FileSymbolDir);
+            DirectoryInfo SymbolFolder = new DirectoryInfo(FileSvgDir+"symbols\\");
             foreach (FileInfo file in SymbolFolder.GetFiles())
             {
-                if (file.Name.Length > 8)
-                {
-                    string str = file.Name.Substring(file.Name.Length - 8);
-                    if (str == ".icn.svg")
-                        phSvg.PhraseSymbol(file.FullName, file.Name);
-                }
+
+                phSvg.PhraseSymbol(file.FullName, file.Name);
+                //if (file.Name.Length > 8)
+                //{
+                //    string str = file.Name.Substring(file.Name.Length - 8);
+                //    if (str == ".icn.svg")
+                //        phSvg.PhraseSymbol(file.FullName, file.Name);
+                //}
             }
 
-            phSvg.InitGzSymbol();
+            //phSvg.InitGzSymbol();
         }
 
         void genGeomeries()

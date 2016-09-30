@@ -43,7 +43,7 @@ namespace VisualSVGLibrary
         private void Update()
         {
             pLayer player = null;//层
-            if (HySVG.uc.objManager.zLayers.TryGetValue("Transformer2", out player))
+            if (HySVG.uc.objManager.zLayers.TryGetValue("yx", out player))
             {
                 foreach (pSymbolObject obj in player.pModels.Values)
                 {
@@ -62,15 +62,15 @@ namespace VisualSVGLibrary
                 }
             }
 
-            if (HySVG.uc.objManager.zLayers.TryGetValue("CBreaker", out player))
+            if (HySVG.uc.objManager.zLayers.TryGetValue("yx", out player))
             {
                 foreach (pSymbolObject obj in player.pModels.Values)
                 {
-                    string str = obj.symbolid.Substring(obj.symbolid.Length - 4);
-                    if (str == "sta0")
-                        obj.symbolid = obj.id2 + "#sta3";
-                    else
-                        obj.symbolid = obj.id2 + "#sta0";
+                    //string str = obj.symbolid.Substring(obj.symbolid.Length - 4);
+                    //if (str == "sta0")
+                    //    obj.symbolid = obj.id2 + "#sta1";
+                    //else
+                    //    obj.symbolid = obj.id2 + "#sta0";
 
                     obj.aniTwinkle.doCount = 20;
                     obj.AnimationBegin(pSymbolObject.EAnimationType.闪烁);
@@ -84,11 +84,12 @@ namespace VisualSVGLibrary
 
         public void UpdateObjStatus()
         {
-            IEnumerable<PowerBasicObject> allobj = HySVG.uc.objManager.getAllObjList();
+            //IEnumerable<PowerBasicObject> allobj = HySVG.uc.objManager.getAllObjList();
+            pLayer player = null;//层
             pSymbolObject.ECStatus status = pSymbolObject.ECStatus._正常;
-            foreach (PowerBasicObject tmpobj in allobj)
+            if (HySVG.uc.objManager.zLayers.TryGetValue("yx", out player))
             {
-                if (tmpobj is pSymbolObject)
+                foreach (pSymbolObject obj in player.pModels.Values)
                 {
                     int nRand = rd.Next(10);
                     if (nRand < 3)
@@ -104,9 +105,32 @@ namespace VisualSVGLibrary
                     else if (nRand < 9)
                         status = pSymbolObject.ECStatus.轻载;
 
-                    (tmpobj as pSymbolObject).objStatus = status;
+                    obj.objStatus = status;
                 }
             }
+
+            //pSymbolObject.ECStatus status = pSymbolObject.ECStatus._正常;
+            //foreach (PowerBasicObject tmpobj in allobj)
+            //{
+            //    if (tmpobj is pSymbolObject)
+            //    {
+            //        int nRand = rd.Next(10);
+            //        if (nRand < 3)
+            //            status = pSymbolObject.ECStatus._正常;
+            //        else if (nRand < 5)
+            //            status = pSymbolObject.ECStatus.检修;
+            //        else if (nRand < 6)
+            //            status = pSymbolObject.ECStatus.故障;
+            //        else if (nRand < 7)
+            //            status = pSymbolObject.ECStatus.停电;
+            //        else if (nRand < 8)
+            //            status = pSymbolObject.ECStatus.过载;
+            //        else if (nRand < 9)
+            //            status = pSymbolObject.ECStatus.轻载;
+
+            //        (tmpobj as pSymbolObject).objStatus = status;
+            //    }
+            //}
         }
 
         //Random rd = new Random();
@@ -151,7 +175,7 @@ namespace VisualSVGLibrary
                     dots = new List<ContourGraph.ValueDot>();
 
                     pLayer layer;
-                    if (HySVG.uc.objManager.zLayers.TryGetValue("QiTa", out layer))
+                    if (HySVG.uc.objManager.zLayers.TryGetValue("yx", out layer))
                     {
                         foreach (pSymbolObject obj in layer.pModels.Values)
                         {
