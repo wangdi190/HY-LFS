@@ -38,7 +38,8 @@ namespace VisualSVGLibrary
         }
 
         private PhraseSVG phSvg;
-        private PanelInfo panelInfo;
+        //private PanelInfo panelInfo;
+        private Panel.Panel panel;
         void Init()
         {
             uc = new Earth();
@@ -51,8 +52,8 @@ namespace VisualSVGLibrary
 
             phSvg = new PhraseSVG();
 
-            panelInfo = new PanelInfo();
-            grdInfo.Children.Add(panelInfo);
+            panel = new Panel.Panel();
+            grdInfo.Children.Add(panel);
 
             genGeomeries();
             genSymbol();

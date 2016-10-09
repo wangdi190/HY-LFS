@@ -2,144 +2,182 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WpfEarthLibrary;
-using System.Threading;
-using System.Windows.Media;
-using System.Windows.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using WpfEarthLibrary;
+using MyClassLibrary.DevShare;
 
-namespace VisualSVGLibrary
+namespace VisualSVGLibrary.Panel
 {
-    class RefreshData
+    /// <summary>
+    /// Panel.xaml 的交互逻辑
+    /// </summary>
+    public partial class Panel : UserControl
     {
-        Thread t = null;
-        public bool bQuit = false;
-
-
-        public RefreshData()
+        public Panel()
         {
-            if (t == null)
+            InitializeComponent();
+        }
+
+        System.Windows.Threading.DispatcherTimer datatimer = new System.Windows.Threading.DispatcherTimer() { Interval = TimeSpan.FromSeconds(10) };
+        Random rd = new Random();
+        PanelRefreshData reData = new PanelRefreshData();
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            grdMain.DataContext = reData;
+            reData.start();
+
+            (panel.Children[0] as RunInfoPanel).status = RunInfoPanel.EStatus.最大化;
+
+            datatimer.Tick += new EventHandler(datatimer_Tick);
+            datatimer.Start();
+        }
+
+        private void grdMain_Unloaded(object sender, RoutedEventArgs e)
+        {
+            datatimer.Stop();
+        }
+
+        void datatimer_Tick(object sender, EventArgs e)
+        {
+            Update();
+        }
+
+        void Update()
+        {
+            reData.readData();
+            ShowObjStatus();
+            showVLContour(reData.dgxIsChecked);
+            HySVG.uc.UpdateModel();
+        }
+
+        private void RunInfoPanel_OnClickHeader(object sender, EventArgs e)
+        {
+            RunInfoPanel pan = sender as RunInfoPanel;
+            pan.status = RunInfoPanel.EStatus.最大化;
+        }
+
+        
+        private void HorizontalToggleSwitch_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckCameraLookDown();
+            ShowObjStatus();
+        }
+
+        private void HorizontalToggleSwitch_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+            CheckCameraLookDown();
+            ShowObjStatus();
+        }
+
+        void CheckCameraLookDown()
+        {
+            bool bLookDown = true;
+            foreach (ChartDataPoint dp in reData.eventCount)
             {
-                t = new Thread(() =>
+                if (dp.isInclude == true)
                 {
-                    while (true)
+                    bLookDown = false;
+                    break;
+                }
+            }
+            if (!bLookDown)
+                HySVG.uc.camera.adjustCameraAngle(45);
+            else
+                HySVG.uc.camera.adjustCameraAngle(0);
+        }
+
+        void ShowObjStatus()
+        {
+            IEnumerable < EventData > lstShowChoose= from e0 in reData.lstEvent
+                  from e1 in reData.eventCount
+                  where e0.eType.ToString()==e1.argu && e1.isInclude==true
+                  select e0;
+
+            foreach (EventData item in lstShowChoose)
+            {
+                item.obj.isShowSubObject = true;
+                if (item.obj.submodels.Count == 0)
+                {
+                    pData pd = new pData(item.obj.parent)
                     {
-                        if (bQuit == true)
-                            break;
-
-                        Update();
-                        UpdateObjStatus();
-                        //ShowObjStatus(HySVG.bShowObjStatus);
-
-                        Thread.Sleep(10000);
+                        id = item.obj.id + "pd",
+                        radScale = 0.02, //底部尺寸
+                        valueScale = 0.002, //值转高度的系数，高度=值*valueScale
+                        location = item.obj.location,
+                        isShowLabel = true,
+                    };
+                    pd.datas.Add(new Data() { id = pd.id + "Data", argu = item.eType.ToString(), value = 30, color = item.color, geokey = "圆锥体", format = "{1}" });
+                    item.obj.AddSubObject("数据对象1", pd);
+                }
+                else
+                {
+                    foreach (PowerBasicObject obj in item.obj.submodels.Values)
+                    {
+                        if (obj is pData)
+                        {
+                            foreach (Data dt in (obj as pData).datas)
+                            {
+                                dt.argu = item.eType.ToString();
+                                dt.color = item.color;
+                                dt.value = 30 + rd.NextDouble();
+                            }
+                        }
                     }
-                });
-                t.IsBackground = true;
+                }
             }
-            t.Start();
+
+            IEnumerable<PowerBasicObject> lstnormals = reData.getAllObjListByLayerName("yx").Where(p => !reData.lstEvent.Any(g => p.id == g.eObjID));
+            foreach (PowerBasicObject obj in lstnormals)
+            {
+                obj.isShowSubObject = false;
+            }
+
+            IEnumerable<EventData> lstED= reData.lstEvent.Where(a=>reData.eventCount.Any(b=>b.isInclude==false&&a.eType.ToString()==b.argu));
+            foreach(EventData ed in lstED)
+            {
+                ed.obj.isShowSubObject = false;
+            }
+
+            HySVG.uc.UpdateModel();
         }
 
-        static Random rd = new Random();
-        private void Update()
+        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            pLayer player = null;//层
-            if (HySVG.uc.objManager.zLayers.TryGetValue("yx", out player))
+            if ((sender as ListBox).SelectedItem != null)
             {
-                foreach (pSymbolObject obj in player.pModels.Values)
-                {
-                    if (obj.busiRunData == null)
-                        obj.busiRunData = new RunDataTfm(obj);
-                    RunDataTfm rdata = obj.busiRunData as RunDataTfm;
+                PowerBasicObject selobj = ((sender as ListBox).SelectedItem as EventData).obj;
+                HySVG.uc.camera.aniLook(selobj.VecLocation, 5);
 
-                    rdata.name = obj.id;
-                    rdata.p = rd.Next(200);
-                    rdata.q = rd.Next(150);
-                    rdata.rateOfLoad = rd.NextDouble();
-
-                    obj.tooltipMoveTemplate = "TransformerInfoTemplate";
-                    obj.tooltipMoveContent = obj.busiRunData;
-                    rdata.refresh();
-                }
+                (selobj as pSymbolObject).aniTwinkle.doCount = 20;
+                (selobj as pSymbolObject).AnimationBegin(pSymbolObject.EAnimationType.闪烁);
             }
-
-            if (HySVG.uc.objManager.zLayers.TryGetValue("yx", out player))
-            {
-                foreach (pSymbolObject obj in player.pModels.Values)
-                {
-                    //string str = obj.symbolid.Substring(obj.symbolid.Length - 4);
-                    //if (str == "sta0")
-                    //    obj.symbolid = obj.id2 + "#sta1";
-                    //else
-                    //    obj.symbolid = obj.id2 + "#sta0";
-
-                    obj.aniTwinkle.doCount = 20;
-                    obj.AnimationBegin(pSymbolObject.EAnimationType.闪烁);
-                    obj.AnimationStop(pSymbolObject.EAnimationType.缩放);
-                }
-            }
-
-
         }
 
-
-        public void UpdateObjStatus()
+        private void HorizontalToggleSwitch_Checked_dgx(object sender, RoutedEventArgs e)
         {
-            //IEnumerable<PowerBasicObject> allobj = HySVG.uc.objManager.getAllObjList();
-            pLayer player = null;//层
-            pSymbolObject.ECStatus status = pSymbolObject.ECStatus._正常;
-            if (HySVG.uc.objManager.zLayers.TryGetValue("yx", out player))
-            {
-                foreach (pSymbolObject obj in player.pModels.Values)
-                {
-                    int nRand = rd.Next(10);
-                    if (nRand < 3)
-                        status = pSymbolObject.ECStatus._正常;
-                    else if (nRand < 5)
-                        status = pSymbolObject.ECStatus.检修;
-                    else if (nRand < 6)
-                        status = pSymbolObject.ECStatus.故障;
-                    else if (nRand < 7)
-                        status = pSymbolObject.ECStatus.停电;
-                    else if (nRand < 8)
-                        status = pSymbolObject.ECStatus.过载;
-                    else if (nRand < 9)
-                        status = pSymbolObject.ECStatus.轻载;
-
-                    obj.objStatus = status;
-                }
-            }
-
-            //pSymbolObject.ECStatus status = pSymbolObject.ECStatus._正常;
-            //foreach (PowerBasicObject tmpobj in allobj)
-            //{
-            //    if (tmpobj is pSymbolObject)
-            //    {
-            //        int nRand = rd.Next(10);
-            //        if (nRand < 3)
-            //            status = pSymbolObject.ECStatus._正常;
-            //        else if (nRand < 5)
-            //            status = pSymbolObject.ECStatus.检修;
-            //        else if (nRand < 6)
-            //            status = pSymbolObject.ECStatus.故障;
-            //        else if (nRand < 7)
-            //            status = pSymbolObject.ECStatus.停电;
-            //        else if (nRand < 8)
-            //            status = pSymbolObject.ECStatus.过载;
-            //        else if (nRand < 9)
-            //            status = pSymbolObject.ECStatus.轻载;
-
-            //        (tmpobj as pSymbolObject).objStatus = status;
-            //    }
-            //}
+            showVLContour(true);
         }
 
-        //Random rd = new Random();
+        private void HorizontalToggleSwitch_Unchecked_dgx(object sender, RoutedEventArgs e)
+        {
+            showVLContour(false);
+        }
 
-        static pLayer contourLayer;
-        static ContourGraph.Contour con;
-        static List<ContourGraph.ValueDot> dots;
-        static pContour gcon;
-        public static void showVLContour(bool isShow)
+
+         pLayer contourLayer;
+         ContourGraph.Contour con;
+         List<ContourGraph.ValueDot> dots;
+         pContour gcon;
+        public void showVLContour(bool isShow)
         {
             if (isShow)
             {
@@ -179,7 +217,7 @@ namespace VisualSVGLibrary
                     {
                         foreach (pSymbolObject obj in layer.pModels.Values)
                         {
-                            dots.Add(new ContourGraph.ValueDot() { id = obj.id, location = obj.center, value = rd.Next(90,110)/(double)100.0 });
+                            dots.Add(new ContourGraph.ValueDot() { id = obj.id, location = obj.center, value = rd.Next(90, 110) / (double)100.0 });
                         }
 
                         double minx, miny, maxx, maxy;
@@ -252,20 +290,14 @@ namespace VisualSVGLibrary
 
                 HySVG.uc.UpdateModel();
             }
-            
+
         }
 
-        static void con_GenCompleted(object sender, EventArgs e) //异步完成
+        void con_GenCompleted(object sender, EventArgs e) //异步完成
         {
             gcon.brush = con.ContourBrush;
             HySVG.uc.UpdateModel();
 
         }
-
-        //public static void hideVLContour()
-        //{
-
-        //}
-
     }
 }

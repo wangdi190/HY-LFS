@@ -75,10 +75,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Panel\PanelInfo_System.xaml.cs">
-      <DependentUpon>PanelInfo_System.xaml</DependentUpon>
+    <Compile Include="Panel\BasePanel.xaml.cs">
+      <DependentUpon>BasePanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\WarningModel.cs" />
+    <Compile Include="Panel\Panel.xaml.cs">
+      <DependentUpon>Panel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Panel\PanelRefreshData.cs" />
+    <Compile Include="Panel\RunInfoPanel.xaml.cs">
+      <DependentUpon>RunInfoPanel.xaml</DependentUpon>
+    </Compile>
     <Page Include="Dictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -87,15 +93,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panel\PanelInfo.xaml">
+    <Page Include="Panel\BasePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panel\PanelInfo_System.xaml">
+    <Page Include="Panel\Panel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Panel\PanelInfo_Warning.xaml">
+    <Page Include="Panel\RunInfoPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -109,14 +115,7 @@
     </Compile>
     <Compile Include="MVVM\DelegateCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
-    <Compile Include="Panel\PanelInfo.xaml.cs">
-      <DependentUpon>PanelInfo.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Panel\PanelInfo_Warning.xaml.cs">
-      <DependentUpon>PanelInfo_Warning.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PhraseSVG.cs" />
-    <Compile Include="RefreshData.cs" />
     <Compile Include="RunData.cs" />
     <Compile Include="UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>

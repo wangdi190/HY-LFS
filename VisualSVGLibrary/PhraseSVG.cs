@@ -26,20 +26,9 @@ namespace VisualSVGLibrary
         double x, y, w, h, angle;
         pSymbol psymbol = null;
         pLayer player = null, player_Text, player_Other;
-        public RefreshData reData = null;
+        //public RefreshData reData = null;
 
-        private void StartRefresh()
-        {
-            if (reData == null)
-            {
-                reData = new RefreshData();
-                return;
-            }
-
-            reData.bQuit = true;
-            reData = null;
-            reData = new RefreshData();
-        }
+        
 
 
         public void VisualFileSvg(string svgPath)
@@ -118,6 +107,7 @@ namespace VisualSVGLibrary
                                             angle = (float)angle,
                                             id2 = icnname,
                                             isUseColor=false,
+                                            isShowSubObject=false,
                                         };
                                         player.AddObject(id, obj);
                                     }
@@ -328,7 +318,7 @@ namespace VisualSVGLibrary
 
 
             HySVG.uc.UpdateModel();
-            StartRefresh();
+            //StartRefresh();
         }
 
         pLayer GetLayerFromName(string classname)
