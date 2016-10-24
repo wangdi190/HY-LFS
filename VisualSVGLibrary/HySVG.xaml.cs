@@ -32,13 +32,16 @@ namespace VisualSVGLibrary
             Init();
         }
 
-        public void Wd()
+        public static void UpdateVisual()
         {
+            uc.camera.calCameraByDirection();
+
+            uc.camera.updateD3DCamera();
+
             uc.UpdateModel();
         }
 
         private PhraseSVG phSvg;
-        //private PanelInfo panelInfo;
         private Panel.Panel panel;
         void Init()
         {
@@ -48,6 +51,11 @@ namespace VisualSVGLibrary
             uc.config.pickEnable = true;
             uc.config.enableMinimap = false;
             uc.earthManager.mapType = EMapType.无;  //设置为无地图模式
+
+            uc.lightManager.lights[0].isEnable = true;
+            uc.lightManager.AmbientLight = Color.FromArgb(0xFF, 0x4F, 0x4F, 0x4F);
+            uc.camera.operateMode = EOperateMode.平面模式;
+
             grdSvg.Children.Add(uc);
 
             phSvg = new PhraseSVG();
@@ -69,17 +77,8 @@ namespace VisualSVGLibrary
             DirectoryInfo SymbolFolder = new DirectoryInfo(FileSvgDir+"symbols\\");
             foreach (FileInfo file in SymbolFolder.GetFiles())
             {
-
                 phSvg.PhraseSymbol(file.FullName, file.Name);
-                //if (file.Name.Length > 8)
-                //{
-                //    string str = file.Name.Substring(file.Name.Length - 8);
-                //    if (str == ".icn.svg")
-                //        phSvg.PhraseSymbol(file.FullName, file.Name);
-                //}
             }
-
-            //phSvg.InitGzSymbol();
         }
 
         void genGeomeries()

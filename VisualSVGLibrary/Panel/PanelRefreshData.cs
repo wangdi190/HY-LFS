@@ -31,7 +31,7 @@ namespace VisualSVGLibrary.Panel
         public double dLoad { get; set; }//当前负荷
         public double dEle { get; set; } //用电量
 
-        private bool bdgx=false;
+        private bool bdgx=true;
         public bool dgxIsChecked
         {
             get { return bdgx; }
@@ -104,7 +104,6 @@ namespace VisualSVGLibrary.Panel
                         EventData edata = lstEvent.Last();
                         lstEvent.Remove(edata);
                         edata.obj.isShowSubObject = false;
-                        
                     }
 
                     if (item.isShowSubObject == false)

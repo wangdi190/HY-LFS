@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="400"></ColumnDefinition>
+            <ColumnDefinition Width="350"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid Name="grdSvg" Grid.ColumnSpan="2" Grid.RowSpan="2"></Grid>
         <Grid Name="grdInfo" Grid.Column="1" Grid.RowSpan="2"></Grid>

@@ -38,6 +38,8 @@ namespace VisualSVGLibrary.Panel
 
             datatimer.Tick += new EventHandler(datatimer_Tick);
             datatimer.Start();
+
+            
         }
 
         private void grdMain_Unloaded(object sender, RoutedEventArgs e)
@@ -55,7 +57,9 @@ namespace VisualSVGLibrary.Panel
             reData.readData();
             ShowObjStatus();
             showVLContour(reData.dgxIsChecked);
-            HySVG.uc.UpdateModel();
+
+            HySVG.UpdateVisual();
+            //HySVG.uc.UpdateModel();
         }
 
         private void RunInfoPanel_OnClickHeader(object sender, EventArgs e)
@@ -73,7 +77,6 @@ namespace VisualSVGLibrary.Panel
 
         private void HorizontalToggleSwitch_Unchecked(object sender, RoutedEventArgs e)
         {
-
             CheckCameraLookDown();
             ShowObjStatus();
         }
@@ -147,7 +150,8 @@ namespace VisualSVGLibrary.Panel
                 ed.obj.isShowSubObject = false;
             }
 
-            HySVG.uc.UpdateModel();
+            HySVG.UpdateVisual();
+            //HySVG.uc.UpdateModel();
         }
 
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)

@@ -26,17 +26,17 @@
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <ts:HorizontalToggleSwitch  IsChecked="{Binding Path=isInclude, Mode=TwoWay}"  Tag="{Binding Path=argu}" Checked="HorizontalToggleSwitch_Checked" Unchecked="HorizontalToggleSwitch_Unchecked"  CheckedForeground="White" UncheckedForeground="#FF5C5C5C" CheckedBackground="{Binding brush}">
-                    <ts:HorizontalToggleSwitch.UncheckedBackground>
+                <ts:HorizontalToggleSwitch  IsChecked="{Binding Path=isInclude, Mode=TwoWay}"  Tag="{Binding Path=argu}" Checked="HorizontalToggleSwitch_Checked" Unchecked="HorizontalToggleSwitch_Unchecked"  CheckedForeground="White" UncheckedForeground="#FF5C5C5C" UncheckedBackground="#FFE1E2E2" CheckedBackground="{Binding brush}">
+                    <!--<ts:HorizontalToggleSwitch.UncheckedBackground>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="#FFBBBBBB" Offset="0"/>
                             <GradientStop Color="#FFE1E2E2" Offset="0.5"/>
                             <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
                             <GradientStop Color="White" Offset="1"/>
                         </LinearGradientBrush>
-                    </ts:HorizontalToggleSwitch.UncheckedBackground>
+                    </ts:HorizontalToggleSwitch.UncheckedBackground>-->
                 </ts:HorizontalToggleSwitch>
-                <TextBlock Grid.Column="1" Text="{Binding argu}"/>
+                <TextBlock Grid.Column="1" Text="{Binding argu}" />
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
@@ -145,11 +145,31 @@
                 </local:RunInfoPanel.content>
             </local:RunInfoPanel>
 
-            <local:RunInfoPanel header="等高线" normalHeight="60" Height="60" OnClickHeader="RunInfoPanel_OnClickHeader">
+            <local:RunInfoPanel header="显示控制" normalHeight="180" Height="180" >
                 <local:RunInfoPanel.content>
                     <StackPanel Margin="5">
-                        <ts:HorizontalToggleSwitch IsChecked="{Binding Path=dgxIsChecked, Mode=TwoWay}" Checked="HorizontalToggleSwitch_Checked_dgx" Unchecked="HorizontalToggleSwitch_Unchecked_dgx"></ts:HorizontalToggleSwitch>
+
+                        <GroupBox Header="等高线" Foreground="White"  BorderThickness="0.1">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <ts:HorizontalToggleSwitch IsChecked="{Binding Path=dgxIsChecked, Mode=TwoWay}" UncheckedBackground="#FFE1E2E2"  UncheckedForeground="#FF5C5C5C" Checked="HorizontalToggleSwitch_Checked_dgx" Unchecked="HorizontalToggleSwitch_Unchecked_dgx"></ts:HorizontalToggleSwitch>
+                                <TextBlock Text=" 等高线"/>
+                            </StackPanel>
+                        </GroupBox>
+                        
+                        <GroupBox Header="事件种类" Foreground="White"  BorderThickness="0.1">
+                            <ItemsControl ItemsSource="{Binding eventCount}"  ItemTemplate="{StaticResource EventTypeTemplate}" HorizontalAlignment="Center">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            <!--<ListBox ItemsSource="{Binding eventCount}" ItemTemplate="{StaticResource EventTypeTemplate}" HorizontalAlignment="Center"></ListBox>-->
+                        </GroupBox>
+                        
                     </StackPanel>
+
+                    
                 </local:RunInfoPanel.content>
             </local:RunInfoPanel>
                 
@@ -177,7 +197,7 @@
                                         <dxc:SimpleDiagram2D.Series>
                                             <dxc:PieSeries2D ArgumentDataMember="argu" ValueDataMember="value" LabelsVisibility="True" >
                                                 <dxc:PieSeries2D.Label>
-                                                    <dxc:SeriesLabel TextPattern="{}{A},{V}"></dxc:SeriesLabel>
+                                                    <dxc:SeriesLabel TextPattern="{}{A},{V}" dxc:PieSeries.LabelPosition="Inside"></dxc:SeriesLabel>
                                                 </dxc:PieSeries2D.Label>
                                             </dxc:PieSeries2D>
                                         </dxc:SimpleDiagram2D.Series>
@@ -186,9 +206,9 @@
                             </dxc:ChartControl>
                         </GroupBox>
 
-                        <GroupBox Header="事件种类" Foreground="White" BorderThickness="0.1">
+                        <!--<GroupBox Header="事件种类" Foreground="White" BorderThickness="0.1">
                             <ItemsControl ItemsSource="{Binding eventCount}"  ItemTemplate="{StaticResource EventTypeTemplate}" HorizontalAlignment="Center"></ItemsControl>
-                        </GroupBox>
+                        </GroupBox>-->
 
                     </StackPanel>
 

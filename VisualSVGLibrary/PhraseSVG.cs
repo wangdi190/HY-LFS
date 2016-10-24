@@ -60,8 +60,8 @@ namespace VisualSVGLibrary
                     case "svg":
                         if (reader.NodeType == XmlNodeType.EndElement)
                             break;
-                        double w = Double.Parse(getPropertyValue(reader, "width"));
-                        double h = Double.Parse(getPropertyValue(reader, "height"));
+                        w = Double.Parse(getPropertyValue(reader, "width"));
+                        h = Double.Parse(getPropertyValue(reader, "height"));
                         HySVG.uc.earthManager.planeViewBox = new Rect(0, 0, w, h);
                         break;
                     case "g":
@@ -96,7 +96,7 @@ namespace VisualSVGLibrary
                                         pSymbolObject obj = new pSymbolObject(player)
                                         {
                                             id = id,
-                                            name=id,
+                                            name = symbol,
                                             //axis = new VECTOR3D(0, 0, 1),
                                             planeLocation = new Point(rt.X+rt.Width/2, rt.Y+rt.Height/2).ToString(),
                                             symbolid = symbol,
@@ -133,7 +133,7 @@ namespace VisualSVGLibrary
                                             planeStrPoints = strPoint,
                                             color = SvgColorToColor(stroke),
                                             isFlow = false, //是否显示潮流
-                                            thickness = 0.002f, //线宽
+                                            thickness = (float)(0.001f * Double.Parse(stroke_width)), //线宽
                                             arrowSize = 0.005f,  //潮流箭头大小
                                             //isInverse = (dir == "0" ? false : true)
                                         };
@@ -167,7 +167,7 @@ namespace VisualSVGLibrary
                                             planeStrPoints = strPoint,
                                             color = SvgColorToColor(stroke),
                                             isFlow = false, //是否显示潮流
-                                            thickness = 0.002f, //线宽
+                                            thickness = 0.001f, //线宽
                                             arrowSize = 0.005f,  //潮流箭头大小
                                             //isInverse = (dir == "0" ? false : true)
                                         };
@@ -277,9 +277,9 @@ namespace VisualSVGLibrary
 
                                         float scalexy = float.Parse(fontsize) / 16f * 0.7f;
                                         w = text.Length * 9;
-                                        h = 17;
+                                        h = 20;
 
-                                        Rect rt = TransformToXY(transform, x, y, w, h, out angle);
+                                        Rect rt = TransformToXY(transform, x, y-5, w, h, out angle);
                                         angle = Math.PI / 180 * (360 - angle);
 
 
